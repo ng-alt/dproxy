@@ -126,7 +126,7 @@ void cache_name_append(char *name, char *ip)
 {
 
   FILE *fp;
-  //char dummy[BUF_SIZE];
+  char dummy[BUF_SIZE];
 
   fp = fopen( config.cache_file, "a");
   if(!fp){
@@ -135,13 +135,11 @@ void cache_name_append(char *name, char *ip)
 	 return;
   }
 
-#if 0
   /** check if another process already added this host to the cache */
   if( cache_byname(fp, name, dummy) != 0 ) {
 	  fclose(fp);
 	  return;
   }
-#endif
 
   /** make shure that we at the end of the file. */
   fseek(fp,0,SEEK_END);

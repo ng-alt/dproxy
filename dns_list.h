@@ -15,3 +15,7 @@ dns_request_t *dns_list_find_by_id(dns_request_t *list, dns_request_t *m);
  * Removes and frees the node pointed to by m
  */
 dns_request_t *dns_list_remove(dns_request_t *list, dns_request_t *m );
+/*
+ * Print out the list for debuging purposes
+ */
+void dns_list_print(dns_request_t *list);

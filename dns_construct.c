@@ -56,7 +56,7 @@ void dns_construct_reply( dns_request_t *m )
   /* point to end of orginal packet */ 
   m->here = &m->original_buf[m->numread];
 
-  m->message.header.ancount = htons( 1 );
+  m->message.header.ancount = 1;
   m->message.header.flags.f.question = 1;
   dns_construct_header( m );
 

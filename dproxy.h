@@ -16,7 +16,7 @@ typedef u_int32_t uint32;
 #include "dns.h"
 
 #ifndef DNS_TIMEOUT 
-#define DNS_TIMEOUT 24
+#define DNS_TIMEOUT 30
 #endif
 #ifndef NAME_SERVER_DEFAULT
 #define NAME_SERVER_DEFAULT "198.95.251.10"

@@ -49,7 +49,7 @@ RCDEFS= $(DIST) -DBIN_DIR="$(BIN_DIR)" -DCONFIG_DIR="$(CONFIG_DIR)"
 # install stuf
 INSTALL=install
 
-OBJS=dproxy.o dns_decode.o dns_list.o cache.o conf.o dns_construct.o
+OBJS=dproxy.o dns_decode.o dns_list.o cache.o conf.o dns_construct.o dns_io.o
 
 all: dproxy dproxy.rc dproxy.conf
 

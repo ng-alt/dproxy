@@ -122,6 +122,10 @@ int dns_decode_message(struct dns_message *m, char **buf)
   SET_UINT16( m->header.nscount, buf );
   SET_UINT16( m->header.arcount, buf );
 
+  if( m->header.ancount > 1 ){
+    printf("Lotsa answers\n");
+  }
+
   /* decode all the question rrs */
   for( i = 0; i < m->header.qdcount && i < NUM_RRS; i++){
     dns_decode_rr( &m->question[i], buf, 1, header_start );
@@ -147,7 +151,8 @@ void dns_decode_request(dns_request_t *m)
   
   if( m->message.question[0].type == PTR ){
     strncpy( m->ip, m->message.question[0].name, 20 );
-  }else if ( m->message.question[0].type == A ){ 
+  }else if ( m->message.question[0].type == A || 
+	     m->message.question[0].type == AAA){ 
     strncpy( m->cname, m->message.question[0].name, NAME_SIZE );
   }
 
@@ -156,22 +161,25 @@ void dns_decode_request(dns_request_t *m)
 
     /* make sure we ge the same type as the query incase there are multiple
        and unrelated answers */
-    if( m->message.question[0].type == A
-	&& m->message.answer[i].type == A ){
-      /* Standard lookup so convert data to an IP */
-      addr = (struct in_addr *)m->message.answer[i].data;
-      strncpy( m->ip, inet_ntoa( addr[0] ), 20 );
-      break;
+    if( m->message.question[0].type == m->message.answer[i].type ){
 
-    }else if(m->message.question[0].type == PTR
-	     && m->message.answer[i].type == PTR ){
-      /* Reverse lookup so convert data to a nume */
-      ptr = m->message.answer[i].data;
-      dns_decode_name( m->cname, &ptr );
-      strncpy( m->ip, m->message.answer[i].name, 20 );
-      break;
-    }
-  }
+      if( m->message.answer[i].type == A
+	  || m->message.answer[i].type == AAA ){
+	/* Standard lookup so convert data to an IP */
+	addr = (struct in_addr *)m->message.answer[i].data;
+	strncpy( m->ip, inet_ntoa( addr[0] ), 20 );
+	break;
+	
+      }else if( m->message.answer[i].type == PTR ){
+	/* Reverse lookup so convert data to a nume */
+	ptr = m->message.answer[i].data;
+	dns_decode_name( m->cname, &ptr );
+	strncpy( m->ip, m->message.answer[i].name, 20 );
+	break;
+      }
+
+    } /* if( question == answer ) */
+  } /* for */
 }
 
 

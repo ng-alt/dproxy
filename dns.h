@@ -73,13 +73,15 @@ enum{ A = 1,      /* a host address */
 	MB,       /* a mailbox domain name (EXPERIMENTAL) */
 	MG,       /* */
 	MR,       /* */
-	NUL,     /* */
+	NUL,      /* */
 	WKS,      /* a well known service description */
 	PTR,      /* a domain name pointer */
 	HINFO,    /* host information */
 	MINFO,    /* mailbox or mail list information */
 	MX,       /* mail exchange */
-	TXT       /* text strings */
+	TXT,      /* text strings */
+
+	AAA = 0x1c /* IPv6 A */
 	};
 
 /* CLASS values */
