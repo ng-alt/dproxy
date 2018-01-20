@@ -1,4 +1,20 @@
 /*
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ * MA 02111-1307 USA
+ */
+/*
   **
   ** conf.c
   **
@@ -48,6 +64,7 @@ struct config config_defaults = {
   PPP_DETECT_DEFAULT ,
   PURGE_TIME_DEFAULT ,
   CONFIG_FILE_DEFAULT, 
+  RESOLV_FILE_DEFAULT,
   DENY_FILE_DEFAULT ,
   CACHE_FILE_DEFAULT, 
   HOSTS_FILE_DEFAULT, 
@@ -93,6 +110,15 @@ config_param config_params[] = {
      init_int,
      copy_int ,
      print_int
+  } ,
+  { 
+     "resolv_file" ,
+     "# Location of the resolv.conf file\n",
+     &config.resolv_file,
+     &config_defaults.resolv_file,
+     copy_string ,
+     copy_string ,
+     print_string
   } ,
   { 
      "deny_file" ,

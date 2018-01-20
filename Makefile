@@ -1,9 +1,12 @@
 # compiler flags
-CC = gcc
+#CROSSCOMPILE = mipsel-linux-
+#CC = $(CROSSCOMPILE)gcc
+#STRIP = $(CROSSCOMPILE)strip
 CFLAGS =-Wall -g -O2
 M4= m4
 
-BIN_DIR=/sbin
+#BIN_DIR=/sbin
+#BIN_DIR=$(TOP)/mipsel/target/sbin
 CONFIG_DIR=/etc
 
 SLACKWARE_SCRIPT=/etc/rc.d/rc.inet2
@@ -39,10 +42,12 @@ RC_SCRIPT_DIR=/etc/rc.d/init.d
 
 CACHE_FILE=$(CACHE_DIR)/dproxy.cache
 CONFIG_FILE=$(CONFIG_DIR)/dproxy.conf
+RESOLV_FILE=$(CONFIG_DIR)/resolv.conf
 
 DEFAULTS= -DCACHE_FILE_DEFAULT=\"$(CACHE_FILE)\" \
 	  -DDHCP_LEASES_DEFAULT=\"$(DHCP_LEASES)\" \
-	  -DCONFIG_FILE_DEFAULT=\"$(CONFIG_FILE)\"
+	  -DCONFIG_FILE_DEFAULT=\"$(CONFIG_FILE)\" \
+	  -DRESOLV_FILE_DEFAULT=\"$(RESOLV_FILE)\" \
 
 RCDEFS= $(DIST) -DBIN_DIR="$(BIN_DIR)" -DCONFIG_DIR="$(CONFIG_DIR)" 
 
@@ -51,10 +56,12 @@ INSTALL=install
 
 OBJS=dproxy.o dns_decode.o dns_list.o cache.o conf.o dns_construct.o dns_io.o
 
-all: dproxy dproxy.rc dproxy.conf
+#all: dproxy dproxy.rc dproxy.conf
+all: dproxy
 
 dproxy: $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $(OBJS)
+	$(STRIP) $@
 
 %.o : %.c Makefile
 	$(CC) -c $(DEFAULTS) $(CFLAGS) $<
@@ -68,10 +75,16 @@ dproxy.conf:  dproxy
 clean:
 	rm -f *.o *~ core dproxy dproxy.rc dproxy.conf
 
-install: all 
-	$(INSTALL) -s dproxy $(BIN_DIR)/dproxy
-	$(INSTALL) -d $(CACHE_DIR)
+romfs: all
+	$(ROMFSINST) /usr/sbin/dproxy
 
+install: all 
+	$(INSTALL) -d $(INSTALLDIR)/usr/sbin
+	$(INSTALL) dproxy $(INSTALLDIR)/usr/sbin
+#	$(INSTALL) -s dproxy $(BIN_DIR)/dproxy
+#JY	$(INSTALL) -d $(CACHE_DIR)
+
+ifeq (1, 0)
 ifeq ($(DIST), -DSLACK)
 	@echo "Attempting Slackware install";
 	@if [ -f $(SLACKWARE_SCRIPT) ] && ! grep -e dproxy $(SLACKWARE_SCRIPT) >/dev/null; then \
@@ -100,6 +113,7 @@ endif
 	   echo "*******************************************************";\
 	fi
 	$(INSTALL) dproxy.conf $(CONFIG_DIR)/dproxy.conf
+endif
 
 uninstall:
 	rm -f $(BIN_DIR)/dproxy

@@ -1,3 +1,19 @@
+/*
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ * MA 02111-1307 USA
+ */
 
 
 #define NUM_RRS 5
@@ -9,11 +25,11 @@ struct dns_rr{
   uint32 ttl;
   uint16 rdatalen;
   char data[NAME_SIZE];
-};
+} __attribute__((packed));
 /*****************************************************************************/
 union header_flags {
   uint16 flags;
-  
+
   struct {
     unsigned short int rcode:4;
     unsigned short int unused:3;
@@ -23,8 +39,8 @@ union header_flags {
     unsigned short int authorative:1;
     unsigned short int opcode:4;
     unsigned short int question:1;
-  } f;
-};
+  } __attribute__((packed)) f;
+} __attribute__((packed));
 /*****************************************************************************/
 struct dns_header_s{
   uint16 id;
@@ -33,7 +49,7 @@ struct dns_header_s{
   uint16 ancount;
   uint16 nscount;
   uint16 arcount;
-};
+} __attribute__((packed));
 /*****************************************************************************/
 struct dns_message{
   struct dns_header_s header;
@@ -46,6 +62,7 @@ typedef struct dns_request_s{
   char ip[20];
   int ttl;
   int time_pending; /* request age in seconds */
+  int duplicate_queries; /* duplicate query number */
 
   /* the actual dns request that was recieved */
   struct dns_message message;
